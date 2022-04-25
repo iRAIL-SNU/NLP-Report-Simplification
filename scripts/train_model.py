@@ -11,6 +11,7 @@ from muss.resources.datasets import create_smaller_dataset
 import torch
 
 
+
 # This dataset should exist in resources/datasets/ and contain the following files:
 # train.complex, train.simple, valid.complex, valid.simple, test.complex, test.simple
 # prepare_wikilarge_detokenized()
@@ -18,6 +19,6 @@ import torch
 prepare_SNUH_detokenized()
 dataset = 'SNUH_detokenized'
 kwargs = get_bart_kwargs(dataset=dataset, language='en', use_access=True)
-kwargs['train_kwargs']['ngpus'] = torch.cuda.device_count()  # Set this from 8 to 1 for local training
+kwargs['train_kwargs']['ngpus'] = 1  # Set this from 8 to 1 for local training
 kwargs['train_kwargs']['max_tokens'] = 512  # Lower this number to prevent OOM
 result = fairseq_train_and_evaluate_with_parametrization(**kwargs)
