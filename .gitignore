@@ -6,3 +6,7 @@
 .nfs*
 experiments
 ts-notebooks
+*.complex*
+*.simple*
+*.txt
+resources/

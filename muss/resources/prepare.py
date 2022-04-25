@@ -50,6 +50,15 @@ def prepare_wikilarge_detokenized():
         apply_line_function_to_dataset(normalize_and_detokenize_line, 'wikilarge', new_dataset)
 
 
+def prepare_SNUH_detokenized():
+    def normalize_and_detokenize_line(sentence):
+        return word_detokenize(normalize_punctuation(normalize_unicode(sentence)), language='en')
+
+    new_dataset = 'SNUH_detokenized'
+    with create_directory_or_skip(new_dataset):
+        apply_line_function_to_dataset(normalize_and_detokenize_line, 'SNUH', new_dataset)
+
+
 def prepare_asset():
     print('ASSET')
     dataset = 'asset'
