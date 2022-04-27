@@ -34,6 +34,7 @@ def get_easse_report(simplifier, test_set, orig_sents_path=None, refs_sents_path
     write_lines(orig_sents, orig_sents_path)
     sys_sents_path = simplifier(orig_sents_path)
     report_path = get_temp_filepath()
+    print('################################report')
     report(
         test_set,
         sys_sents_path=sys_sents_path,

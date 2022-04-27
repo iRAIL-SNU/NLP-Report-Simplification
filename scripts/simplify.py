@@ -12,12 +12,13 @@ from muss.utils.helpers import read_lines
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='Simplify a file line by line.')
-    parser.add_argument('filepath', type=str, help='File containing the source sentences, one sentence per line.')
+    parser.add_argument('--filepath',default='NLP-Report-Simplification/scripts/examples_report.en', type=str, help='File containing the source sentences, one sentence per line.')
     parser.add_argument(
         '--model-name',
         type=str,
-        default=ALLOWED_MODEL_NAMES[0],
-        choices=ALLOWED_MODEL_NAMES,
+        default='muss_en_wikilarge_mined',
+        # default='fairseq/local_1650876531474',
+        # choices=ALLOWED_MODEL_NAMES,
         help=f'Model name to generate from. Models selected with the highest validation SARI score.',
     )
     args = parser.parse_args()

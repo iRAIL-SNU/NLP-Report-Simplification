@@ -10,7 +10,7 @@ import re
 from muss.preprocessors import get_preprocessors
 from muss.utils.helpers import write_lines, read_lines, get_temp_filepath
 from muss.simplifiers import get_fairseq_simplifier, get_preprocessed_simplifier
-from muss.resources.paths import MODELS_DIR
+from muss.resources.paths import EXP_DIR, MODELS_DIR
 from muss.utils.resources import download_and_extract
 
 
@@ -28,8 +28,13 @@ def is_model_using_mbart(model_name):
 
 
 def get_model_path(model_name):
-    assert model_name in ALLOWED_MODEL_NAMES
-    model_path = MODELS_DIR / model_name
+    # assert model_name in ALLOWED_MODEL_NAMES
+
+    if model_name != "muss_en_wikilarge_mined":
+        print('## LOADING FINETUNNED MODEL ##')
+        model_path = EXP_DIR / model_name
+    else:
+        model_path = MODELS_DIR / model_name
     if not model_path.exists():
         url = f'https://dl.fbaipublicfiles.com/muss/{model_name}.tar.gz'
         extracted_path = download_and_extract(url)[0]
@@ -44,10 +49,10 @@ def get_language_from_model_name(model_name):
 def get_muss_preprocessors(model_name):
     language = get_language_from_model_name(model_name)
     preprocessors_kwargs = {
-        'LengthRatioPreprocessor': {'target_ratio': 0.9, 'use_short_name': False},
-        'ReplaceOnlyLevenshteinPreprocessor': {'target_ratio': 0.65, 'use_short_name': False},
-        'WordRankRatioPreprocessor': {'target_ratio': 0.75, 'language': language, 'use_short_name': False},
-        'DependencyTreeDepthRatioPreprocessor': {'target_ratio': 0.4, 'language': language, 'use_short_name': False},
+        'LengthRatioPreprocessor': {'target_ratio': 3.0, 'use_short_name': False},
+        'ReplaceOnlyLevenshteinPreprocessor': {'target_ratio': 0.7, 'use_short_name': False},
+        'WordRankRatioPreprocessor': {'target_ratio': 0.4, 'language': 'en', 'use_short_name': False},
+        'DependencyTreeDepthRatioPreprocessor': {'target_ratio': 1.2, 'language': 'en', 'use_short_name': False},
     }
     if is_model_using_mbart(model_name):
         preprocessors_kwargs['SentencePiecePreprocessor'] = {
@@ -62,7 +67,16 @@ def get_muss_preprocessors(model_name):
 def simplify_sentences(source_sentences, model_name='muss_en_wikilarge_mined'):
     # Best ACCESS parameter values for the en_bart_access_wikilarge_mined model, ideally we would need to use another set of parameters for other models.
     exp_dir = get_model_path(model_name)
+    if model_name != 'muss_en_wikilarge_mined':
+        import pickle
+        import os
+        with open(os.path.join(exp_dir, 'preprocessors.pickle'), 'rb') as f:
+            preprocessors = pickle.load(f)
+    else:
+        preprocessors = get_muss_preprocessors(model_name)
     preprocessors = get_muss_preprocessors(model_name)
+    print(preprocessors)
+
     generate_kwargs = {}
     if is_model_using_mbart(model_name):
         generate_kwargs['task'] = 'translation_from_pretrained_bart'

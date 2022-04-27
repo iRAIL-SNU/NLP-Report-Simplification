@@ -16,9 +16,15 @@ import torch
 # train.complex, train.simple, valid.complex, valid.simple, test.complex, test.simple
 # prepare_wikilarge_detokenized()
 # prepare_asset()
-prepare_SNUH_detokenized()
+# prepare_SNUH_detokenized()
 dataset = 'SNUH_detokenized'
 kwargs = get_bart_kwargs(dataset=dataset, language='en', use_access=True)
 kwargs['train_kwargs']['ngpus'] = 1  # Set this from 8 to 1 for local training
 kwargs['train_kwargs']['max_tokens'] = 512  # Lower this number to prevent OOM
+kwargs['train_kwargs']['max_epoch'] = 1
+kwargs['train_kwargs']['save_interval_updates'] = 1
+kwargs['train_kwargs']['save_interval'] = 1
+
+
 result = fairseq_train_and_evaluate_with_parametrization(**kwargs)
+print('end')

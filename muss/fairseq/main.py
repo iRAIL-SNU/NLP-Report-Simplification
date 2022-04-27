@@ -223,7 +223,7 @@ def fairseq_train_and_evaluate_with_parametrization(dataset, **kwargs):
     # Training
     exp_dir = print_running_time(fairseq_prepare_and_train)(dataset, **kwargs)
     # Find best parametrization
-    recommended_preprocessors_kwargs = print_running_time(find_best_parametrization)(exp_dir, **kwargs)
+    recommended_preprocessors_kwargs = print_running_time(find_best_parametrization)(exp_dir, fast_parametrization_search=True, **kwargs)
     print(f'recommended_preprocessors_kwargs={recommended_preprocessors_kwargs}')
     kwargs['preprocessor_kwargs'] = recommended_preprocessors_kwargs
     # Evaluation
